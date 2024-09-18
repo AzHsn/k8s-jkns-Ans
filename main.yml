@@ -1,0 +1,8 @@
+---
+- name: deploy deployment resource on k8s
+  hosts: all
+  tasks:
+  - name: run deployment file
+    ansible.builtin.script: kubectl apply -f deployment.yml
+    
+      

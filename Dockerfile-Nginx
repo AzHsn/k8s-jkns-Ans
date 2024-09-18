@@ -1,0 +1,7 @@
+FROM ubuntu:latest
+
+# Install Nginx
+RUN apt-get update && apt-get install -y nginx
+
+# Expose port 80
+EXPOSE 80

@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+    environment{
+        DockerFile='/home/abdelazez/depi/YAT/k8s-jkns-Ans/Dockerfile-Nginx'
+        DeploymentFile = '/home/abdelazez/depi/YAT/k8s-jkns-Ans/deployment.yml'
+        Inventory = '/home/abdelazez/depi/YAT/k8s-jkns-Ans/inventory.ini'
+        AnsibleCfg = '/home/abdelazez/depi/YAT/k8s-jkns-Ans/ansible.cfg'
+        AnsiblePlaybook= '/home/abdelazez/YAT/K8s-jkns-Ans/main.yml'
+    }
+    stages {
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t $docker_name:$docker_version -f ${DockerFile} .'
+            }
+        }
+        stage('Starting Minikube') {
+            steps {
+                sh 'if ! minikube status > /dev/null; then minikube start; fi'
+            }
+        }
+        stage('Docker Login') {
+            steps {
+                sh 'docker login -u $docker_username -p $docker_password'
+            }
+        }
+        stage('Docker Push') {
+            steps {
+                sh 'docker tag $docker_name:$docker_version $docker_username/$docker_name:$docker_version && docker push $docker_username/$docker_name:$docker_version'
+            }
+        }
+        stage('Prepare DeploymentFile') {
+            steps {
+                sh 'cp ${DeploymentFile} .'
+                sh 'sed "s|image: nginx:1.14.2|image: $docker_username/$docker_name:$docker_version|" deployment.yml > /home/abdelazez/depi/YAT/out.yml' 
+
+            }
+        }
+        stage('Prepare Ansible Enviornment ') {
+            steps {
+                sh'cp ${Inventory} . && cp ${AnsibleCfg} . '
+                
+            }
+        }
+        stage('Deploy on K8S') {
+            steps {
+                sh'ansible-playbook -i inventory.ini ${AnsiblePlaybook}'
+            }
+        }
+    }
+}
