@@ -41,8 +41,8 @@ pipeline {
         stage('Prepare DeploymentFile') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'DOCKERHUB', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                sh 'cp $DeploymentFile .'
                 sh 'sed "s|image: nginx:1.14.2|image: $USERNAME/$IMAGE_NAME:$IMAGE_VERSION|" deployment.yml > /home/abdelazez/out.yml' 
+                sh 'cp $DeploymentFile .'
                 }
             }
         }
