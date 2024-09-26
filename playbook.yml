@@ -1,7 +1,22 @@
 ---
-- name: deploy deployment resource on k8s
-  hosts: k8s-cluster
+- name: Deploy deployment resource on k8s
+  hosts: cluster
   tasks:
+
+    - name: Check status of Minikube
+      command: minikube status
+      register: minikube_status
+      ignore_errors: yes
+
+    - name: Print Minikube status
+      ansible.builtin.debug:
+        msg: "{{ minikube_status.stdout_lines }}"
+
+    - name: Start Minikube if not running
+      command: minikube start
+      when: "'host: Running' not in minikube_status.stdout"
+
     - name: run deployment file
-      command: minikube kubectl -- apply -f deployment.yml
-      
+      script: ./deployment.yml
+      args:
+        executable: minikube kubectl -- apply -f
