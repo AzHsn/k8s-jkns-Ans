@@ -10,7 +10,7 @@ pipeline {
         DockerFile = './Dockerfile-Nginx'
         DeploymentFile = './deployment.yml'
         Inventory = './inventory.ini'
-        AnsiblePlaybook = './main.yml'
+        AnsiblePlaybook = './playbook.yml'
     }
 
     stages {
