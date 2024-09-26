@@ -4,7 +4,6 @@ pipeline {
         DockerFile='/home/abdelazez/depi/YAT/k8s-jkns-Ans/Dockerfile-Nginx'
         DeploymentFile = '/home/abdelazez/depi/YAT/k8s-jkns-Ans/deployment.yml'
         Inventory = '/home/abdelazez/depi/YAT/k8s-jkns-Ans/inventory.ini'
-        AnsibleCfg = '/home/abdelazez/depi/YAT/k8s-jkns-Ans/ansible.cfg'
         AnsiblePlaybook= '/home/abdelazez/YAT/K8s-jkns-Ans/main.yml'
     }
     stages {
@@ -35,15 +34,10 @@ pipeline {
 
             }
         }
-        stage('Prepare Ansible Enviornment ') {
-            steps {
-                sh'cp ${Inventory} . && cp ${AnsibleCfg} . '
-                
-            }
-        }
+
         stage('Deploy on K8S') {
             steps {
-                sh'ansible-playbook -i inventory.ini ${AnsiblePlaybook}'
+                sh'ansible-playbook -i ${Inventory} ${AnsiblePlaybook}'
             }
         }
     }

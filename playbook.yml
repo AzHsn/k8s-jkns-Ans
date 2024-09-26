@@ -1,0 +1,7 @@
+---
+- name: deploy deployment resource on k8s
+  hosts: k8s-cluster
+  tasks:
+    - name: run deployment file
+      command: minikube kubectl -- apply -f deployment.yml
+      
