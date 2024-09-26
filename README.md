@@ -1,4 +1,4 @@
-# k8s-jkns-Ans
+# k8s-jenkins-Ansible
  Dockerized Application Deployment with Jenkins and Kubernetes
 
 # Overview
